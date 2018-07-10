@@ -36,8 +36,12 @@ import qgis.utils
 import ogr
 from PyQt5.QtGui import *
 from PyQt5 import *
-from PyQt5 import QtWidgets 
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QTableWidget,QTableWidgetItem, QPushButton
+from sys import path
+path.append(os.path.dirname(__file__))
+from core import *
+
 
 fieldsName_list = []
 fieldsType_list = []
@@ -109,12 +113,13 @@ class ActiveBubo:
             fieldsName_list.append(attributes.GetFieldDefn(i).GetName())
             fieldsType_list.append(attributes.GetFieldDefn(i).GetTypeName())
         self.dlg.comboBox.addItems(fieldsName_list)
-        
+        #self.dlg.lineEdit.setText(testFun())
+
     def Select_field(self):
         global filterFields_list
-        #global i 
+        #global i
         #i = i + 2
-        #a = self.dlg.comboBox.currentIndex()    
+        #a = self.dlg.comboBox.currentIndex()
         #self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + self.dlg.comboBox.currentText())
         #####
         #button = QPushButton(QTableWidget)
@@ -127,15 +132,15 @@ class ActiveBubo:
         field_name = fieldsName_list[self.dlg.comboBox.currentIndex()]
         field_type = fieldsType_list[self.dlg.comboBox.currentIndex()]
         numcols = self.dlg.tableWidget.columnCount()
-        numrows = self.dlg.tableWidget.rowCount()   
+        numrows = self.dlg.tableWidget.rowCount()
         self.dlg.tableWidget.setRowCount(numrows)
-        self.dlg.tableWidget.setColumnCount(numcols)           
+        self.dlg.tableWidget.setColumnCount(numcols)
         self.dlg.tableWidget.setItem(numrows -1,0,QtWidgets.QTableWidgetItem(field_name))
         self.dlg.tableWidget.setItem(numrows -1,1,QtWidgets.QTableWidgetItem(field_type))
         #self.dlg.lineEdit_2.hide()
         #self.dlg.tableWidget.setItem(numrows -1,2,QtWidgets.QTableWidgetItem("-"))
         self.dlg.comboBox_2.addItem(fieldsName_list[self.dlg.comboBox.currentIndex()])
-    
+
     def Select_all_field(self):
         for i in range(len(fieldsName_list)):
             rowPosition = self.dlg.tableWidget.rowCount()
@@ -143,20 +148,20 @@ class ActiveBubo:
             field_name = fieldsName_list[i]
             field_type = fieldsType_list[i]
             numcols = self.dlg.tableWidget.columnCount()
-            numrows = self.dlg.tableWidget.rowCount()   
+            numrows = self.dlg.tableWidget.rowCount()
             self.dlg.tableWidget.setRowCount(numrows)
-            self.dlg.tableWidget.setColumnCount(numcols)           
+            self.dlg.tableWidget.setColumnCount(numcols)
             self.dlg.tableWidget.setItem(numrows -1,0,QtWidgets.QTableWidgetItem(field_name))
-            self.dlg.tableWidget.setItem(numrows -1,1,QtWidgets.QTableWidgetItem(field_type)) 
+            self.dlg.tableWidget.setItem(numrows -1,1,QtWidgets.QTableWidgetItem(field_type))
         self.dlg.comboBox_2.addItems(fieldsName_list)
-    
-    
+
+
     def addExpression(self):
         self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() +" "+ self.dlg.comboBox_2.currentText())
 
 
 
-    
+
     def delete_rows(self):
         i=1
         # to delete all rows
