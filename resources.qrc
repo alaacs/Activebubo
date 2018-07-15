@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/Active_Bubo" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
