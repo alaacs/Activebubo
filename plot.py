@@ -2,13 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 #Defining Function
 def boxplot_distance(data_to_plot):#an array of data for each month
-        
-        data_to_plot = [collectn_1,collectn_2,collectn_3,collectn_4]
+
+        #data_to_plot = [collectn_1,collectn_2,collectn_3,collectn_4]
         fig = plt.figure(1,figsize=(9,6))
         ax = fig.add_subplot(111)
         bp = ax.boxplot(data_to_plot,0,'',patch_artist='True')
 
-        #changing colours 
+        #changing colours
         for box in bp['boxes']:
                 #outline color
                 box.set( color='#7570b3', linewidth=2)
@@ -37,12 +37,12 @@ def boxplot_distance(data_to_plot):#an array of data for each month
         plt.show()
 
 def boxplot_speed(data_to_plot):#an array of data for each month
-        data_to_plot = [collectn_1,collectn_2,collectn_3,collectn_4]
+        #data_to_plot = [collectn_1,collectn_2,collectn_3,collectn_4]
         fig = plt.figure(1,figsize=(9,6))
         ax = fig.add_subplot(111)
         bp = ax.boxplot(data_to_plot,0,'',patch_artist='True')
 
-        #changing colours 
+        #changing colours
         for box in bp['boxes']:
                 #outline color
                 box.set( color='#7570b3', linewidth=2)
@@ -69,24 +69,24 @@ def boxplot_speed(data_to_plot):#an array of data for each month
         fig.savefig('boxplot2.png',bbox_inches='tight')
         print('done')
         plt.show()
-		
+
 def graph_speed_distance(data_to_plot):
-		data_to_plot = {months,distance,speed}
+		#data_to_plot = {months,distance,speed}
 		fig, ax1 = plt.subplots()
-		ax1.plot(months,distance, 'b-',label = 'distance')
+		ax1.plot(data_to_plot['months'],data_to_plot['averageDistances'], 'b-',label = 'distance')
 		ax1.set_xlabel('month')
 		# Make the y-axis label, ticks and tick labels match the line color.
 		ax1.set_ylabel('distance', color='b',)
 		ax1.tick_params('y', colors='b')
 		ax2 = ax1.twinx()
-		ax2.plot(months,speed, 'r--',label = 'speed')
+		ax2.plot(data_to_plot['months'],data_to_plot['averageSpeeds'], 'r--',label = 'speed')
 		ax2.set_ylabel('speed', color='r')
 		ax2.tick_params('y', colors='r')
 		plt.title("Activebubo_owlID")
 		plt.legend()
 		fig.savefig('dist_speed.png',bbox_inches='tight')
 		plt.show()
-		
+
 def male_female_distance(data_to_plot):# array with same number of entries
 		data_to_plot = {months,distance_male,distance_female}
 		fig = plt.figure(1,figsize=(9,6))
@@ -98,7 +98,7 @@ def male_female_distance(data_to_plot):# array with same number of entries
 		plt.legend()
 		plt.show()
 		fig.savefig('malefemale.png',bbox_inches='tight')
-		
+
 def male_female_speed(data_to_plot):# array with same number of entries
 		data_to_plot = {months,speed_male,speed_female}
 		fig = plt.figure(1,figsize=(9,6))
@@ -110,7 +110,7 @@ def male_female_speed(data_to_plot):# array with same number of entries
 		plt.legend()
 		plt.show()
 		fig.savefig('malefemale_speed.png',bbox_inches='tight')
-		
+
 def graph_distance(data_to_plot):
 		data_to_plot = {months,distance_OwlID1,distance_OwlID2,distance_OwlID3,distance_OwlID4}
 		fig = plt.figure(1,figsize=(9,6))

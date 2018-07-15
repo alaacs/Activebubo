@@ -55,9 +55,43 @@ def calculateOwlStats(owlInfo, speed_field, group_by = "month"):
         previousFeat = obs
     return stats
 
+def parseOwlDataForBoxplots(owlData, property):
+    #create an array of 12 element for 12 months
+    resultData = [[],[],[],[],[],[],[],[],[],[],[],[]]
+    for owlKey in owlData:
+        owlMonths = owlData[owlKey]
+        for month in owlMonths:
+            #for each month add one entry for the owl distance in this month regardress of the year
+            monthNumberString = month.split('-')[0].strip()
+            monthIndex = int(monthNumberString) - 1
+            monthData = owlMonths[month]
+            resultData[monthIndex].append(monthData[property])
+    return resultData
+def parseOwlDataToAverageByMonth(owlData):
+    resultData = {'months':None, 'averageDistances':None, 'averageSpeeds':None}
+    monthsOccurances = [0,0,0,0,0,0,0,0,0,0,0,0]
+    resultData['months'] = [1,2,3,4,5,6,7,8,9,10,11,12]
+    resultData['averageDistances'] = [0,0,0,0,0,0,0,0,0,0,0,0]
+    resultData['averageSpeeds'] = [0,0,0,0,0,0,0,0,0,0,0,0]
+    for owlKey in owlData:
+        owlMonths = owlData[owlKey]
+        for month in owlMonths:
+            monthNumberString = month.split('-')[0].strip()
+            monthIndex = int(monthNumberString) - 1
+            monthsOccurances[monthIndex] += 1
+            monthData = owlMonths[month]
+            currentAvgDist = resultData['averageDistances'][monthIndex]
+            currentAvgSpeed = resultData['averageSpeeds'][monthIndex]
+            resultData['averageDistances'][monthIndex] = currentAvgDist + monthData['totalDistance']/monthData['observationCount']
+            resultData['averageSpeeds'][monthIndex] = currentAvgSpeed + monthData['averageSpeed']
+    for x in range(12):
+        resultData['averageDistances'][x] = resultData['averageDistances'][x]/monthsOccurances[x]
+        resultData['averageSpeeds'][x] = resultData['averageSpeeds'][x]/monthsOccurances[x]
+    return resultData
+
 def getOwlsAggregateData(shapefile_path, timestamp_field, speed_field, owl_id_field, filters, group_by = "month"):
     driver = ogr.GetDriverByName("ESRI Shapefile")
-    data_source = driver.Open(in_path, 0)
+    data_source = driver.Open(shapefile_path, 0)
     layer = data_source.GetLayer(0)
     layer.SetAttributeFilter(filters)
     #layer = preprocess(layer)
@@ -79,7 +113,4 @@ def getOwlsAggregateData(shapefile_path, timestamp_field, speed_field, owl_id_fi
         #print(stats)
     return statDict
 
-in_path = "D:\\Mastergeotech\\Munster\\Python\\Project\\movebank\\eagle_owl\\Eagle owl Reinhard Vohwinkel MPIO\\points.shp"
-stats = getOwlsAggregateData(in_path, "timestamp", "speed", "tag_ident",
-"tag_ident in ('1750', '1751', '1753', '1754', '3899', '4045', '5158', '4846', '4848')", group_by = "month" )
-print(stats)
+#in_path = "D:\\Mastergeotech\\Munster\\Python\\Project\\movebank\\eagle_owl\\Eagle owl Reinhard Vohwinkel MPIO\\points.shp"
