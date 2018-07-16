@@ -67,6 +67,31 @@ def parseOwlDataForBoxplots(owlData, property):
             monthData = owlMonths[month]
             resultData[monthIndex].append(monthData[property])
     return resultData
+def parseOwlDataToAvgPerOwlPerMonth(owlData):
+    resultData = {'months':[1,2,3,4,5,6,7,8,9,10,11,12], 'owls': []}
+    for owlKey in owlData:
+        owlMonths = owlData[owlKey]
+        currentOwlData = {'label':owlKey, 'averageDistances': [None, None, None, None, None, None, None, None, None, None, None, None],\
+            'averageSpeeds':[None, None, None, None, None, None, None, None, None, None, None, None]}
+        monthsOccurances = [0,0,0,0,0,0,0,0,0,0,0,0]
+        for month in owlMonths:
+            monthNumberString = month.split('-')[0].strip()
+            monthIndex = int(monthNumberString) - 1
+            monthsOccurances[monthIndex] += 1
+            monthData = owlMonths[month]
+            if(currentOwlData['averageDistances'][monthIndex] is None):
+                currentOwlData['averageDistances'][monthIndex] = monthData['totalDistance']/monthData['observationCount']
+            else: currentOwlData['averageDistances'][monthIndex] += monthData['totalDistance']/monthData['observationCount']
+            if(currentOwlData['averageSpeeds'][monthIndex] is None):
+                currentOwlData['averageSpeeds'][monthIndex] = monthData['averageSpeed']
+            else: currentOwlData['averageSpeeds'][monthIndex] += monthData['averageSpeed']
+        for x in range(12):
+            if(currentOwlData['averageDistances'][x] is not None):
+                currentOwlData['averageDistances'][x] = currentOwlData['averageDistances'][x]/monthsOccurances[x]
+                currentOwlData['averageSpeeds'][x] = currentOwlData['averageSpeeds'][x]/monthsOccurances[x]
+        resultData['owls'].append(currentOwlData)
+    return resultData
+
 def parseOwlDataToAverageByMonth(owlData):
     resultData = {'months':None, 'averageDistances':None, 'averageSpeeds':None}
     monthsOccurances = [0,0,0,0,0,0,0,0,0,0,0,0]

@@ -293,14 +293,19 @@ class ActiveBubo:
             # substitute with your code.
             owlData = getOwlsAggregateData(self.in_path, "timestamp", "speed", "tag_ident","tag_ident in ('1750', '1751', '1753', '1754', '3899', '4045', '5158', '4846', '4848') AND speed > 1.5", group_by = "month" )
             #print(parseOwlDataToByMonth(owlData))
+            print(owlData)
 
-            boxplotDistanceData = parseOwlDataForBoxplots(owlData, "totalDistance")
-            boxplotAvgSpeedData = parseOwlDataForBoxplots(owlData, "averageSpeed")
-            print(boxplotDistanceData)
+            #boxplotDistanceData = parseOwlDataForBoxplots(owlData, "totalDistance")
+            #boxplotAvgSpeedData = parseOwlDataForBoxplots(owlData, "averageSpeed")
+            #print(boxplotDistanceData)
             #boxplot_distance(boxplotDistanceData)
-            print(boxplotAvgSpeedData)
+            #print(boxplotAvgSpeedData)
             #boxplot_speed(boxplotAvgSpeedData)
-            averageDataPerMonth = parseOwlDataToAverageByMonth(owlData)
-            print(averageDataPerMonth)
-            graph_speed_distance(averageDataPerMonth)
+            #averageDataPerMonth = parseOwlDataToAverageByMonth(owlData)
+            #print(averageDataPerMonth)
+            #graph_speed_distance(averageDataPerMonth)
+
+            graphDistancePerOwlData = parseOwlDataToAvgPerOwlPerMonth(owlData)
+            print(graphDistancePerOwlData)
+            graph_speed(graphDistancePerOwlData)
             pass
