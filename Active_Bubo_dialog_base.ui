@@ -185,7 +185,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="btn_equals">
     <property name="geometry">
      <rect>
       <x>11</x>
@@ -198,7 +198,7 @@
      <string>=</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="btn_lessThan">
     <property name="geometry">
      <rect>
       <x>111</x>
@@ -211,7 +211,7 @@
      <string>&lt;</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="btn_greaterThan">
     <property name="geometry">
      <rect>
       <x>211</x>
@@ -224,7 +224,7 @@
      <string>&gt;</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_4">
+   <widget class="QPushButton" name="btn_in">
     <property name="geometry">
      <rect>
       <x>311</x>
@@ -237,7 +237,7 @@
      <string>IN</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_5">
+   <widget class="QPushButton" name="btn_like">
     <property name="geometry">
      <rect>
       <x>11</x>
@@ -250,7 +250,7 @@
      <string>LIKE</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_6">
+   <widget class="QPushButton" name="btn_and">
     <property name="geometry">
      <rect>
       <x>111</x>
@@ -263,7 +263,7 @@
      <string>AND</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_7">
+   <widget class="QPushButton" name="btn_or">
     <property name="geometry">
      <rect>
       <x>211</x>
@@ -276,7 +276,7 @@
      <string>OR</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_8">
+   <widget class="QPushButton" name="btn_not">
     <property name="geometry">
      <rect>
       <x>311</x>

@@ -53,6 +53,7 @@ class ActiveBubo:
 
         # Save reference to the QGIS interface
         self.iface = iface
+        self.deleteChartImagesDirectory()
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
         # initialize locale
@@ -87,7 +88,31 @@ class ActiveBubo:
         self.dlg.addExpression_button.clicked.connect(self.addExpression)
         self.dlg.previousPicture_button.clicked.connect(self.previousPicture)
         self.dlg.nextPicture_button.clicked.connect(self.nextPicture)
+        self.dlg.btn_equals.clicked.connect(self.equalsButtonHandler)
+        self.dlg.btn_lessThan.clicked.connect(self.lessThanButtonHandler)
+        self.dlg.btn_greaterThan.clicked.connect(self.greaterThanButtonHandler)
+        self.dlg.btn_in.clicked.connect(self.inButtonHandler)
+        self.dlg.btn_like.clicked.connect(self.likeButtonHandler)
+        self.dlg.btn_and.clicked.connect(self.andButtonHandler)
+        self.dlg.btn_or.clicked.connect(self.orButtonHandler)
+        self.dlg.btn_not.clicked.connect(self.notButtonHandler)
     #---------------------------
+    def equalsButtonHandler(self):
+        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + " = ")
+    def lessThanButtonHandler(self):
+        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + " < ")
+    def greaterThanButtonHandler(self):
+        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + " > ")
+    def inButtonHandler(self):
+        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + " IN( ) ")
+    def likeButtonHandler(self):
+        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + " LIKE ")
+    def andButtonHandler(self):
+        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + " AND ")
+    def orButtonHandler(self):
+        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + " OR ")
+    def notButtonHandler(self):
+        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + " NOT ")
     def open_shapefile(self):
         filename = QFileDialog.getOpenFileName(self.dlg, "Open shapefile ","", '*.shp')
         self.dlg.lineEdit.setText(str(filename[0]))
@@ -109,44 +134,44 @@ class ActiveBubo:
         #self.dlg.lineEdit.setText(testFun())
 
     def exportAsReport(self):
+        return
         ###ADD content
         ######get pictures saves of plots and display first one
-        global picutresLisit
-        global i
-        picutresLisit = os.listdir(r"C:\charts")
-        if (len(picutresLisit) >= 0 ):
-            pixmap = QPixmap('C:\\charts\\'+ picutresLisit[i])
-            self.dlg.plotLabel.setPixmap(pixmap)
+
             #i = i+1
 
 
 
 
     def process(self):
+        directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "chartimages")
+        if not os.path.exists(directory):
+            os.makedirs(directory)
         owlData = getOwlsAggregateData(self.in_path, "timestamp", "speed", "tag_ident","tag_ident in ('1750', '1751', '1753', '1754', '3899', '4045', '5158', '4846', '4848') AND speed > 1.5", group_by = "month" )
         #print(parseOwlDataToByMonth(owlData))
         print(owlData)
 
-        #boxplotDistanceData = parseOwlDataForBoxplots(owlData, "totalDistance")
-        #boxplotAvgSpeedData = parseOwlDataForBoxplots(owlData, "averageSpeed")
+        boxplotDistanceData = parseOwlDataForBoxplots(owlData, "totalDistance")
+        boxplotAvgSpeedData = parseOwlDataForBoxplots(owlData, "averageSpeed")
         #print(boxplotDistanceData)
-        #boxplot_distance(boxplotDistanceData)
+        boxplot_distance(boxplotDistanceData)
         #print(boxplotAvgSpeedData)
-        #boxplot_speed(boxplotAvgSpeedData)
-        #averageDataPerMonth = parseOwlDataToAverageByMonth(owlData)
+        boxplot_speed(boxplotAvgSpeedData)
+        averageDataPerMonth = parseOwlDataToAverageByMonth(owlData)
         #print(averageDataPerMonth)
-        #graph_speed_distance(averageDataPerMonth)
+        graph_speed_distance(averageDataPerMonth)
 
         graphDistancePerOwlData = parseOwlDataToAvgPerOwlPerMonth(owlData)
         print(graphDistancePerOwlData)
         graph_speed(graphDistancePerOwlData)
-        
-        ######get pictures saves of plots and display first one
-        picutresLisit = os.listdir(r"C:\charts")
-        pixmap = QPixmap('C:\\charts\\'+ picutresLisit[0])
-        self.dlg.plotLabel.setPixmap(pixmap)
-        
+        graph_distance(graphDistancePerOwlData)
 
+        global picutresLisit
+        global i
+        picutresLisit = os.listdir(directory)
+        if (len(picutresLisit) >= 0 ):
+            pixmap = QPixmap(os.path.join(directory, picutresLisit[i]))
+            self.dlg.plotLabel.setPixmap(pixmap)
 
 
     def addExpression(self):
@@ -154,21 +179,23 @@ class ActiveBubo:
 
 
     def previousPicture(self):
+        directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "chartimages")
         global i
         if(i-1 < 0):
             i = len(picutresLisit)-1
         else: i = i-1
-        pixmap = QPixmap('C:\\charts\\'+ picutresLisit[i])
+        pixmap = QPixmap(os.path.join(directory, picutresLisit[i]))
         self.dlg.plotLabel.setPixmap(pixmap)
 
-    
+
 
     def nextPicture(self):
+        directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "chartimages")
         global i
         if(i+1 > len(picutresLisit)-1):
             i = 0
         else: i = i+1
-        pixmap = QPixmap('C:\\charts\\'+ picutresLisit[i])
+        pixmap = QPixmap(os.path.join(directory, picutresLisit[i]))
         self.dlg.plotLabel.setPixmap(pixmap)
 
 
@@ -236,7 +263,12 @@ class ActiveBubo:
         # remove the toolbar
         del self.toolbar
 
-
+    def deleteChartImagesDirectory(self):
+        directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "chartimages")
+        if os.path.exists(directory):
+            for file in os.listdir(directory):
+                os.remove(os.path.join(directory, file))
+        return True
     def run(self):
         """Run method that performs all the real work"""
         # show the dialog
@@ -245,6 +277,7 @@ class ActiveBubo:
         result = self.dlg.exec_()
         # See if OK was pressed
         if result:
+            self.deleteChartImagesDirectory()
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
             pass
