@@ -82,6 +82,7 @@ class ActiveBubo:
         #/////////////////////////
         self.dlg.lineEdit.clear()
         self.dlg.lineEdit_2.clear()
+        self.dlg.lineEdit_2.setPlainText("tag_ident in ('1750', '1751', '1753', '1754', '3899', '4045', '5158', '4846', '4848') AND speed > 1.5")
         self.dlg.openShapefile_button.clicked.connect(self.open_shapefile)
         self.dlg.exportAsReport_button.clicked.connect(self.exportAsReport)
         self.dlg.process_button.clicked.connect(self.process)
@@ -96,23 +97,29 @@ class ActiveBubo:
         self.dlg.btn_and.clicked.connect(self.andButtonHandler)
         self.dlg.btn_or.clicked.connect(self.orButtonHandler)
         self.dlg.btn_not.clicked.connect(self.notButtonHandler)
+        self.dlg.btnParenthesisOpen.clicked.connect(self.oParenthesisButtonHandler)
+        self.dlg.btnParenthesisClose.clicked.connect(self.cParenthesisButtonHandler)
     #---------------------------
+    def oParenthesisButtonHandler(self):
+        self.dlg.lineEdit_2.setPlainText(self.dlg.lineEdit_2.toPlainText() + " ( ")
+    def cParenthesisButtonHandler(self):
+        self.dlg.lineEdit_2.setPlainText(self.dlg.lineEdit_2.toPlainText() + " ) ")
     def equalsButtonHandler(self):
-        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + " = ")
+        self.dlg.lineEdit_2.setPlainText(self.dlg.lineEdit_2.toPlainText() + " = ")
     def lessThanButtonHandler(self):
-        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + " < ")
+        self.dlg.lineEdit_2.setPlainText(self.dlg.lineEdit_2.toPlainText() + " < ")
     def greaterThanButtonHandler(self):
-        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + " > ")
+        self.dlg.lineEdit_2.setPlainText(self.dlg.lineEdit_2.toPlainText() + " > ")
     def inButtonHandler(self):
-        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + " IN( ) ")
+        self.dlg.lineEdit_2.setPlainText(self.dlg.lineEdit_2.toPlainText() + " IN( ) ")
     def likeButtonHandler(self):
-        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + " LIKE ")
+        self.dlg.lineEdit_2.setPlainText(self.dlg.lineEdit_2.toPlainText() + " LIKE ")
     def andButtonHandler(self):
-        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + " AND ")
+        self.dlg.lineEdit_2.setPlainText(self.dlg.lineEdit_2.toPlainText() + " AND ")
     def orButtonHandler(self):
-        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + " OR ")
+        self.dlg.lineEdit_2.setPlainText(self.dlg.lineEdit_2.toPlainText() + " OR ")
     def notButtonHandler(self):
-        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + " NOT ")
+        self.dlg.lineEdit_2.setPlainText(self.dlg.lineEdit_2.toPlainText() + " NOT ")
     def open_shapefile(self):
         filename = QFileDialog.getOpenFileName(self.dlg, "Open shapefile ","", '*.shp')
         self.dlg.lineEdit.setText(str(filename[0]))
@@ -122,32 +129,37 @@ class ActiveBubo:
         # 0 means read-only. 1 means writeable.
         data_source = driver.Open(in_path, 0)
         # get the Layer class object
-        layer = data_source.GetLayer(0)
-        self.in_path = in_path
-        global fieldsName_list
-        global fieldsType_list
-        attributes = layer.GetLayerDefn()
-        for i in range(attributes.GetFieldCount()):
-            fieldsName_list.append(attributes.GetFieldDefn(i).GetName())
-            fieldsType_list.append(attributes.GetFieldDefn(i).GetTypeName())
-        self.dlg.comboBox.addItems(fieldsName_list)
-        #self.dlg.lineEdit.setText(testFun())
+        if in_path!= "":
+            layer = data_source.GetLayer(0)
+            self.in_path = in_path
+            global fieldsName_list
+            global fieldsType_list
+            attributes = layer.GetLayerDefn()
+            for i in range(attributes.GetFieldCount()):
+                fieldsName_list.append(attributes.GetFieldDefn(i).GetName())
+                fieldsType_list.append(attributes.GetFieldDefn(i).GetTypeName())
+            self.dlg.comboBox.addItems(fieldsName_list)
+            self.dlg.cb_timeField.addItems(fieldsName_list)
+            index = self.dlg.cb_timeField.findText("timestamp", QtCore.Qt.MatchFixedString)
+            self.dlg.cb_timeField.setCurrentIndex(index)
+            self.dlg.cb_speedField.addItems(fieldsName_list)
+            index2 = self.dlg.cb_speedField.findText("speed", QtCore.Qt.MatchFixedString)
+            self.dlg.cb_speedField.setCurrentIndex(index2)
+            self.dlg.cb_idOwlField.addItems(fieldsName_list)
+            index3 = self.dlg.cb_idOwlField.findText("tag_ident", QtCore.Qt.MatchFixedString)
+            self.dlg.cb_idOwlField.setCurrentIndex(index3)
+
 
     def exportAsReport(self):
-        return
-        ###ADD content
-        ######get pictures saves of plots and display first one
-
-            #i = i+1
-
-
+        directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "chartimages")
+        os.system('explorer.exe "'+directory+'"')
 
 
     def process(self):
         directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "chartimages")
         if not os.path.exists(directory):
             os.makedirs(directory)
-        owlData = getOwlsAggregateData(self.in_path, "timestamp", "speed", "tag_ident","tag_ident in ('1750', '1751', '1753', '1754', '3899', '4045', '5158', '4846', '4848') AND speed > 1.5", group_by = "month" )
+        owlData = getOwlsAggregateData(self.in_path, self.dlg.cb_timeField.currentText(), self.dlg.cb_speedField.currentText(), self.dlg.cb_idOwlField.currentText(),self.dlg.lineEdit_2.toPlainText(), group_by = "month" )
         #print(parseOwlDataToByMonth(owlData))
         print(owlData)
 
@@ -175,7 +187,7 @@ class ActiveBubo:
 
 
     def addExpression(self):
-        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() +" "+ self.dlg.comboBox.currentText())
+        self.dlg.lineEdit_2.setPlainText(self.dlg.lineEdit_2.toPlainText() +" "+ self.dlg.comboBox.currentText())
 
 
     def previousPicture(self):
@@ -277,7 +289,7 @@ class ActiveBubo:
         result = self.dlg.exec_()
         # See if OK was pressed
         if result:
-            self.deleteChartImagesDirectory()
+            #self.deleteChartImagesDirectory()
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
             pass
