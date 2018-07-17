@@ -141,5 +141,5 @@ def graph_speed(data_to_plot):
    plt.ylabel('Speed')
    plt.title("Activebubo")
    plt.legend()
-   fig.savefig('D:\\speedgraph.png',bbox_inches='tight')
+   #fig.savefig('C:\\speedgraph.png',bbox_inches='tight')
    plt.show()

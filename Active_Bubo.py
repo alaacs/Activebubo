@@ -21,7 +21,7 @@
  ***************************************************************************/
 """
 from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from PyQt5.QtGui import QIcon
+#from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction
 from PyQt5.QtWidgets import QFileDialog
 # Initialize Qt resources from file resources.py
@@ -45,20 +45,12 @@ from plot import *
 
 fieldsName_list = []
 fieldsType_list = []
-filterFields_list = []
-i=1
-first_row = True
+picutresLisit = []
+i = 0
 class ActiveBubo:
-    """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
-        """Constructor.
 
-        :param iface: An interface instance that will be passed to this class
-            which provides the hook by which you can manipulate the QGIS
-            application at run time.
-        :type iface: QgsInterface
-        """
         # Save reference to the QGIS interface
         self.iface = iface
         # initialize plugin directory
@@ -88,13 +80,13 @@ class ActiveBubo:
         self.toolbar.setObjectName(u'ActiveBubo')
         #/////////////////////////
         self.dlg.lineEdit.clear()
-        #self.dlg.lineEdit_2.clear()
-        self.dlg.pushButton.clicked.connect(self.open_shapefile)
-        self.dlg.pushButton_2.clicked.connect(self.Select_field)
-        self.dlg.pushButton_3.clicked.connect(self.Select_all_field)
-        self.dlg.pushButton_4.clicked.connect(self.delete_rows)
-        self.dlg.pushButton_5.clicked.connect(self.addExpression)
-        self.dlg.pushButton_4.hide()
+        self.dlg.lineEdit_2.clear()
+        self.dlg.openShapefile_button.clicked.connect(self.open_shapefile)
+        self.dlg.exportAsReport_button.clicked.connect(self.exportAsReport)
+        self.dlg.process_button.clicked.connect(self.process)
+        self.dlg.addExpression_button.clicked.connect(self.addExpression)
+        self.dlg.previousPicture_button.clicked.connect(self.previousPicture)
+        self.dlg.nextPicture_button.clicked.connect(self.nextPicture)
     #---------------------------
     def open_shapefile(self):
         filename = QFileDialog.getOpenFileName(self.dlg, "Open shapefile ","", '*.shp')
@@ -116,72 +108,74 @@ class ActiveBubo:
         self.dlg.comboBox.addItems(fieldsName_list)
         #self.dlg.lineEdit.setText(testFun())
 
-    def Select_field(self):
-        global filterFields_list
-        #global i
-        #i = i + 2
-        #a = self.dlg.comboBox.currentIndex()
-        #self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + self.dlg.comboBox.currentText())
-        #####
-        #button = QPushButton(QTableWidget)
-        #self.dlg.button.clicked.connect(self.delete_rows)
+    def exportAsReport(self):
+        ###ADD content
+        ######get pictures saves of plots and display first one
+        global picutresLisit
+        global i
+        picutresLisit = os.listdir(r"C:\charts")
+        if (len(picutresLisit) >= 0 ):
+            pixmap = QPixmap('C:\\charts\\'+ picutresLisit[i])
+            self.dlg.plotLabel.setPixmap(pixmap)
+            #i = i+1
 
-        #####
-        #self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() + str(self.dlg.tableWidget.rowCount()))
-        rowPosition = self.dlg.tableWidget.rowCount()
-        self.dlg.tableWidget.insertRow(rowPosition)
-        field_name = fieldsName_list[self.dlg.comboBox.currentIndex()]
-        field_type = fieldsType_list[self.dlg.comboBox.currentIndex()]
-        numcols = self.dlg.tableWidget.columnCount()
-        numrows = self.dlg.tableWidget.rowCount()
-        self.dlg.tableWidget.setRowCount(numrows)
-        self.dlg.tableWidget.setColumnCount(numcols)
-        self.dlg.tableWidget.setItem(numrows -1,0,QtWidgets.QTableWidgetItem(field_name))
-        self.dlg.tableWidget.setItem(numrows -1,1,QtWidgets.QTableWidgetItem(field_type))
-        #self.dlg.lineEdit_2.hide()
-        #self.dlg.tableWidget.setItem(numrows -1,2,QtWidgets.QTableWidgetItem("-"))
-        self.dlg.comboBox_2.addItem(fieldsName_list[self.dlg.comboBox.currentIndex()])
 
-    def Select_all_field(self):
-        for i in range(len(fieldsName_list)):
-            rowPosition = self.dlg.tableWidget.rowCount()
-            self.dlg.tableWidget.insertRow(rowPosition)
-            field_name = fieldsName_list[i]
-            field_type = fieldsType_list[i]
-            numcols = self.dlg.tableWidget.columnCount()
-            numrows = self.dlg.tableWidget.rowCount()
-            self.dlg.tableWidget.setRowCount(numrows)
-            self.dlg.tableWidget.setColumnCount(numcols)
-            self.dlg.tableWidget.setItem(numrows -1,0,QtWidgets.QTableWidgetItem(field_name))
-            self.dlg.tableWidget.setItem(numrows -1,1,QtWidgets.QTableWidgetItem(field_type))
-        self.dlg.comboBox_2.addItems(fieldsName_list)
+
+
+    def process(self):
+        owlData = getOwlsAggregateData(self.in_path, "timestamp", "speed", "tag_ident","tag_ident in ('1750', '1751', '1753', '1754', '3899', '4045', '5158', '4846', '4848') AND speed > 1.5", group_by = "month" )
+        #print(parseOwlDataToByMonth(owlData))
+        print(owlData)
+
+        #boxplotDistanceData = parseOwlDataForBoxplots(owlData, "totalDistance")
+        #boxplotAvgSpeedData = parseOwlDataForBoxplots(owlData, "averageSpeed")
+        #print(boxplotDistanceData)
+        #boxplot_distance(boxplotDistanceData)
+        #print(boxplotAvgSpeedData)
+        #boxplot_speed(boxplotAvgSpeedData)
+        #averageDataPerMonth = parseOwlDataToAverageByMonth(owlData)
+        #print(averageDataPerMonth)
+        #graph_speed_distance(averageDataPerMonth)
+
+        graphDistancePerOwlData = parseOwlDataToAvgPerOwlPerMonth(owlData)
+        print(graphDistancePerOwlData)
+        graph_speed(graphDistancePerOwlData)
+        
+        ######get pictures saves of plots and display first one
+        picutresLisit = os.listdir(r"C:\charts")
+        pixmap = QPixmap('C:\\charts\\'+ picutresLisit[0])
+        self.dlg.plotLabel.setPixmap(pixmap)
+        
+
 
 
     def addExpression(self):
-        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() +" "+ self.dlg.comboBox_2.currentText())
+        self.dlg.lineEdit_2.setText(self.dlg.lineEdit_2.text() +" "+ self.dlg.comboBox.currentText())
 
 
+    def previousPicture(self):
+        global i
+        if(i-1 < 0):
+            i = len(picutresLisit)-1
+        else: i = i-1
+        pixmap = QPixmap('C:\\charts\\'+ picutresLisit[i])
+        self.dlg.plotLabel.setPixmap(pixmap)
+
+    
+
+    def nextPicture(self):
+        global i
+        if(i+1 > len(picutresLisit)-1):
+            i = 0
+        else: i = i+1
+        pixmap = QPixmap('C:\\charts\\'+ picutresLisit[i])
+        self.dlg.plotLabel.setPixmap(pixmap)
 
 
-    def delete_rows(self):
-        i=1
-        # to delete all rows
-        #self.dlg.tableWidget.setRowCount(0)
-        # to delete all rows
-        #self.dlg.tableWidget.removeRow(1)
-
+    #####################----------------------####################
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
-        """Get the translation for a string using Qt translation API.
 
-        We implement this ourselves since we do not inherit QObject.
-
-        :param message: String for translation.
-        :type message: str, QString
-
-        :returns: Translated version of message.
-        :rtype: QString
-        """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('ActiveBubo', message)
 
@@ -197,44 +191,6 @@ class ActiveBubo:
         status_tip=None,
         whats_this=None,
         parent=None):
-        """Add a toolbar icon to the toolbar.
-
-        :param icon_path: Path to the icon for this action. Can be a resource
-            path (e.g. ':/plugins/foo/bar.png') or a normal file system path.
-        :type icon_path: str
-
-        :param text: Text that should be shown in menu items for this action.
-        :type text: str
-
-        :param callback: Function to be called when the action is triggered.
-        :type callback: function
-
-        :param enabled_flag: A flag indicating if the action should be enabled
-            by default. Defaults to True.
-        :type enabled_flag: bool
-
-        :param add_to_menu: Flag indicating whether the action should also
-            be added to the menu. Defaults to True.
-        :type add_to_menu: bool
-
-        :param add_to_toolbar: Flag indicating whether the action should also
-            be added to the toolbar. Defaults to True.
-        :type add_to_toolbar: bool
-
-        :param status_tip: Optional text to show in a popup when mouse pointer
-            hovers over the action.
-        :type status_tip: str
-
-        :param parent: Parent widget for the new action. Defaults None.
-        :type parent: QWidget
-
-        :param whats_this: Optional text to show in the status bar when the
-            mouse pointer hovers over the action.
-
-        :returns: The action that was created. Note that the action is also
-            added to self.actions list.
-        :rtype: QAction
-        """
 
         icon = QIcon(icon_path)
         action = QAction(icon, text, parent)
@@ -291,21 +247,4 @@ class ActiveBubo:
         if result:
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
-            owlData = getOwlsAggregateData(self.in_path, "timestamp", "speed", "tag_ident","tag_ident in ('1750', '1751', '1753', '1754', '3899', '4045', '5158', '4846', '4848') AND speed > 1.5", group_by = "month" )
-            #print(parseOwlDataToByMonth(owlData))
-            print(owlData)
-
-            #boxplotDistanceData = parseOwlDataForBoxplots(owlData, "totalDistance")
-            #boxplotAvgSpeedData = parseOwlDataForBoxplots(owlData, "averageSpeed")
-            #print(boxplotDistanceData)
-            #boxplot_distance(boxplotDistanceData)
-            #print(boxplotAvgSpeedData)
-            #boxplot_speed(boxplotAvgSpeedData)
-            #averageDataPerMonth = parseOwlDataToAverageByMonth(owlData)
-            #print(averageDataPerMonth)
-            #graph_speed_distance(averageDataPerMonth)
-
-            graphDistancePerOwlData = parseOwlDataToAvgPerOwlPerMonth(owlData)
-            print(graphDistancePerOwlData)
-            graph_speed(graphDistancePerOwlData)
             pass
