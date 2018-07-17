@@ -26,4 +26,3 @@ class Ui_ActiveBuboDialogBase(object):
     def retranslateUi(self, ActiveBuboDialogBase):
         _translate = QtCore.QCoreApplication.translate
         ActiveBuboDialogBase.setWindowTitle(_translate("ActiveBuboDialogBase", "Active Bubo"))
-
