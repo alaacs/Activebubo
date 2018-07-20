@@ -80,8 +80,8 @@ def parseOwlDataToAvgPerOwlPerMonth(owlData):
             monthsOccurances[monthIndex] += 1
             monthData = owlMonths[month]
             if(currentOwlData['averageDistances'][monthIndex] is None):
-                currentOwlData['averageDistances'][monthIndex] = monthData['totalDistance']/monthData['observationCount']
-            else: currentOwlData['averageDistances'][monthIndex] += monthData['totalDistance']/monthData['observationCount']
+                currentOwlData['averageDistances'][monthIndex] = monthData['totalDistance']
+            else: currentOwlData['averageDistances'][monthIndex] += monthData['totalDistance']
             if(currentOwlData['averageSpeeds'][monthIndex] is None):
                 currentOwlData['averageSpeeds'][monthIndex] = monthData['averageSpeed']
             else: currentOwlData['averageSpeeds'][monthIndex] += monthData['averageSpeed']
@@ -107,11 +107,12 @@ def parseOwlDataToAverageByMonth(owlData):
             monthData = owlMonths[month]
             currentAvgDist = resultData['averageDistances'][monthIndex]
             currentAvgSpeed = resultData['averageSpeeds'][monthIndex]
-            resultData['averageDistances'][monthIndex] = currentAvgDist + monthData['totalDistance']/monthData['observationCount']
+            resultData['averageDistances'][monthIndex] = currentAvgDist + monthData['totalDistance']
             resultData['averageSpeeds'][monthIndex] = currentAvgSpeed + monthData['averageSpeed']
     for x in range(12):
-        resultData['averageDistances'][x] = resultData['averageDistances'][x]/monthsOccurances[x]
-        resultData['averageSpeeds'][x] = resultData['averageSpeeds'][x]/monthsOccurances[x]
+        if(monthsOccurances[x] != 0):
+            resultData['averageDistances'][x] = resultData['averageDistances'][x]/monthsOccurances[x]
+            resultData['averageSpeeds'][x] = resultData['averageSpeeds'][x]/monthsOccurances[x]
     return resultData
 
 def getOwlsAggregateData(shapefile_path, timestamp_field, speed_field, owl_id_field, filters, group_by = "month"):
