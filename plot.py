@@ -1,6 +1,7 @@
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FormatStrFormatter
 #Defining Function
 def boxplot_distance(data_to_plot):#an array of data for each month
     directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "chartimages")
@@ -28,11 +29,12 @@ def boxplot_distance(data_to_plot):#an array of data for each month
     for flier in bp['fliers']:
             flier.set(marker ='o',color = '#e7298a', alpha= 0.5)
     ax.yaxis.grid(True)
-    ax.set_title('Activebubo in terms of distance')
+    ax.set_title('Boxplots for average distances covered by owls')
     ax.set_xlabel('month')
     ax.set_ylabel('distance')
     ax.get_xaxis().tick_bottom()
     ax.get_yaxis().tick_left()
+    plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%d KM'))
     fig.savefig(os.path.join(directory,'boxplot1.png'),bbox_inches='tight')
     print('done')
     #plt.show()
@@ -63,11 +65,12 @@ def boxplot_speed(data_to_plot):#an array of data for each month
     for flier in bp['fliers']:
             flier.set(marker ='o',color = '#e7298a', alpha= 0.5)
     ax.yaxis.grid(True)
-    ax.set_title('Activebubo in terms of Speed')
+    ax.set_title('Boxplots for average speed for owls per month')
     ax.set_xlabel('month')
     ax.set_ylabel('speed')
     ax.get_xaxis().tick_bottom()
     ax.get_yaxis().tick_left()
+    plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%d MPS'))
     fig.savefig(os.path.join(directory,'boxplot2.png'),bbox_inches='tight')
     print('done')
     #plt.show()
@@ -86,34 +89,12 @@ def graph_speed_distance(data_to_plot):
    ax2.plot(data_to_plot['months'],data_to_plot['averageSpeeds'], 'r--',label = 'speed')
    ax2.set_ylabel('speed', color='r')
    ax2.tick_params('y', colors='r')
-   plt.title("Activebubo_owlID")
+   plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%d MPS'))
+   plt.title("Average owl speed and distance covered per month")
    plt.legend()
+
    fig.savefig(os.path.join(directory,'dist_speed.png'),bbox_inches='tight')
    ##plt.show()
-
-def male_female_distance(data_to_plot):# array with same number of entries
-   data_to_plot = {months,distance_male,distance_female}
-   fig = plt.figure(3,figsize=(9,6))
-   plt.plot(months,distance_male, label='male')
-   plt.plot(months,distance_femalemale, label='female')
-   plt.xlabel('Months')
-   plt.ylabel('Distance')
-   plt.title("Activebubo")
-   plt.legend()
-   plt.show()
-   fig.savefig('malefemale.png',bbox_inches='tight')
-
-def male_female_speed(data_to_plot):# array with same number of entries
-   data_to_plot = {months,speed_male,speed_female}
-   fig = plt.figure(4,figsize=(9,6))
-   plt.plot(months,speed_male, label='male')
-   plt.plot(months,speed_female, label='female')
-   plt.xlabel('Months')
-   plt.ylabel('Speed')
-   plt.title("Activebubo")
-   plt.legend()
-   plt.show()
-   fig.savefig('malefemale_speed.png',bbox_inches='tight')
 
 def graph_distance(data_to_plot):
    #data_to_plot = {months,distance_OwlID1,distance_OwlID2,distance_OwlID3,distance_OwlID4}
@@ -121,13 +102,10 @@ def graph_distance(data_to_plot):
    fig = plt.figure(5,figsize=(9,6))
    for owl in data_to_plot['owls']:
         plt.plot(data_to_plot['months'],owl['averageDistances'], label=owl['label'])
-   # Trace1 = plt.plot(months,distance_OwlID1, label='owlid1')
-   # Trace2 = plt.plot(months,distance_OwlID2, label='owlid2')
-   # Trace3 = plt.plot(months,distance_OwlID3, label='owlid3')
-   # Trace4 = plt.plot(months,distance_OwlID4, label='owlid4')
+   plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%d KM'))
    plt.xlabel('Months')
    plt.ylabel('Speed')
-   plt.title("Activebubo")
+   plt.title("Total Distance covered per owl per month")
    plt.legend()
    fig.savefig(os.path.join(directory,'distancegraph.png'),bbox_inches='tight')
    # plt.show()
@@ -138,13 +116,10 @@ def graph_speed(data_to_plot):
    fig = plt.figure(6,figsize=(9,6))
    for owl in data_to_plot['owls']:
         plt.plot(data_to_plot['months'],owl['averageSpeeds'], label=owl['label'])
-   # Trace1 = plt.plot(months,speed_OwlID1, label='owlid1')
-   # Trace2 = plt.plot(months,speed_OwlID2, label='owlid2')
-   # Trace3 = plt.plot(months,speed_OwlID3, label='owlid3')
-   # Trace4 = plt.plot(months,speed_OwlID4, label='owlid4')
+   plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%d KM'))
    plt.xlabel('Months')
    plt.ylabel('Speed')
-   plt.title("Activebubo")
+   plt.title("Average speed covered per owl per month")
    plt.legend()
    fig.savefig(os.path.join(directory,'speedgraph.png'),bbox_inches='tight')
    #plt.show()
