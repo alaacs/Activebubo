@@ -18,7 +18,7 @@ The owl dataset contains over 518000 point features for the GPS signals of the t
 
 ## Install plugin on your Computer
 1. Copy the whole folder content into QGIS plugins folder, it lies in this directory (Windows)
->C:\Users\{User}\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\activebubo\chartimages
+>C:/Users/{User}/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins
 2. Run QGIS as administrator
 3. Install ActiveBubo plugin:
   * From QGIS menu click **plugins** then **Manage and Install Plugins..**
