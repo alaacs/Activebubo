@@ -1,7 +1,6 @@
 import numpy as np
 import os
 import matplotlib.pyplot as plt
-from matplotlib.ticker import FormatStrFormatter
 #Defining Function
 def boxplot_distance(data_to_plot):#an array of data for each month
     directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "chartimages")
@@ -30,11 +29,11 @@ def boxplot_distance(data_to_plot):#an array of data for each month
             flier.set(marker ='o',color = '#e7298a', alpha= 0.5)
     ax.yaxis.grid(True)
     ax.set_title('Boxplots for average distances covered by owls')
-    ax.set_xlabel('month')
-    ax.set_ylabel('distance')
+    ax.set_xlabel('Month')
+    ax.set_ylabel('Distance(km)')
     ax.get_xaxis().tick_bottom()
     ax.get_yaxis().tick_left()
-    plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%d KM'))
+    #plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%d KM'))
     fig.savefig(os.path.join(directory,'boxplot1.png'),bbox_inches='tight')
     print('done')
     #plt.show()
@@ -66,11 +65,11 @@ def boxplot_speed(data_to_plot):#an array of data for each month
             flier.set(marker ='o',color = '#e7298a', alpha= 0.5)
     ax.yaxis.grid(True)
     ax.set_title('Boxplots for average speed for owls per month')
-    ax.set_xlabel('month')
-    ax.set_ylabel('speed')
+    ax.set_xlabel('Month')
+    ax.set_ylabel('Speed(mps)')
     ax.get_xaxis().tick_bottom()
     ax.get_yaxis().tick_left()
-    plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%d MPS'))
+    #plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%d MPS'))
     fig.savefig(os.path.join(directory,'boxplot2.png'),bbox_inches='tight')
     print('done')
     #plt.show()
@@ -81,15 +80,15 @@ def graph_speed_distance(data_to_plot):
    plt.figure(2,figsize=(9,6))
    fig, ax1 = plt.subplots()
    ax1.plot(data_to_plot['months'],data_to_plot['averageDistances'], 'b-',label = 'distance')
-   ax1.set_xlabel('month')
+   ax1.set_xlabel('Month')
    # Make the y-axis label, ticks and tick labels match the line color.
-   ax1.set_ylabel('distance', color='b',)
+   ax1.set_ylabel('Distance(km)', color='b',)
    ax1.tick_params('y', colors='b')
    ax2 = ax1.twinx()
    ax2.plot(data_to_plot['months'],data_to_plot['averageSpeeds'], 'r--',label = 'speed')
-   ax2.set_ylabel('speed', color='r')
+   ax2.set_ylabel('Speed(mps)', color='r')
    ax2.tick_params('y', colors='r')
-   plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%d MPS'))
+   #plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%d MPS'))
    plt.title("Average owl speed and distance covered per month")
    plt.legend()
 
@@ -102,10 +101,9 @@ def graph_distance(data_to_plot):
    fig = plt.figure(5,figsize=(9,6))
    for owl in data_to_plot['owls']:
         plt.plot(data_to_plot['months'],owl['averageDistances'], label=owl['label'])
-   plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%d KM'))
    plt.xlabel('Months')
-   plt.ylabel('Speed')
-   plt.title("Total Distance covered per owl per month")
+   plt.ylabel('Distance(km)')
+   plt.title("Average Distance covered per owl per month")
    plt.legend()
    fig.savefig(os.path.join(directory,'distancegraph.png'),bbox_inches='tight')
    # plt.show()
@@ -116,9 +114,8 @@ def graph_speed(data_to_plot):
    fig = plt.figure(6,figsize=(9,6))
    for owl in data_to_plot['owls']:
         plt.plot(data_to_plot['months'],owl['averageSpeeds'], label=owl['label'])
-   plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%d KM'))
    plt.xlabel('Months')
-   plt.ylabel('Speed')
+   plt.ylabel('Speed(mps)')
    plt.title("Average speed covered per owl per month")
    plt.legend()
    fig.savefig(os.path.join(directory,'speedgraph.png'),bbox_inches='tight')

@@ -5,9 +5,21 @@ path.append(getcwd())
 from math import pi
 from datetime import datetime
 #from preprocessing import *
-def calculateDistance(pnt1, pnt2):
-    earth_mean_radius = 6371
-    return pnt1.Distance(pnt2) * earth_mean_radius * pi/180
+# def calculateDistance(pnt1, pnt2):
+#     earth_mean_radius = 6371
+#     return pnt1.Distance(pnt2) * earth_mean_radius * pi/180
+def calculateDistanceFromXY(x1, y1, x2, y2, crsESPG):
+
+    srs = ogr.osr.SpatialReference()
+    srs.ImportFromEPSG(crsESPG)
+    point1 = ogr.Geometry(ogr.wkbPoint)
+    point1.AddPoint(x1, y1)
+    point1.AssignSpatialReference(srs)
+
+    point2 = ogr.Geometry(ogr.wkbPoint)
+    point2.AddPoint(x2, y2)
+    point2.AssignSpatialReference(srs)
+    return point1.Distance(point2) / 1000
 
 #This function splits the layer into a dictionary for each owl and its corresponding SORTED features by timestamp
 def getOwlLists(layer, owl_id_field, timestamp_field):
@@ -40,7 +52,14 @@ def calculateOwlStats(owlInfo, speed_field, group_by = "month"):
                 currentCycle = str(obs['timestamp'].day) +"-" + str(obs['timestamp'].month) +"-"+ str(obs['timestamp'].year)
             else :#should be by year
                 currentCycle = str(obs['timestamp'].year)
-            distance = calculateDistance(obs['feature'].geometry(), previousFeat['feature'].geometry())
+            #print(obs)
+            #32632 is ESPG for WGS UTM Zone 32N http://spatialreference.org/ref/epsg/32632/
+            distance = calculateDistanceFromXY(obs['feature']['utm_north'],
+                obs['feature']['utm_east'],
+                previousFeat['feature']['utm_north'],
+                previousFeat['feature']['utm_east'],
+                32632)
+            #distance = calculateDistance(obs['feature'].geometry(), previousFeat['feature'].geometry())
             if(currentCycle not in stats):
                 stats[currentCycle] = {}
                 stats[currentCycle]['observationCount'] = 0
